@@ -1,5 +1,12 @@
 ##https://pypi.org/project/psutil/
 import psutil
+import datetime
+import collections
+import time
+
+#score ratio:
+#battery = 10
+score =0
 
 #this fuction will return a list
 number_of_users = psutil.users()
@@ -35,6 +42,9 @@ cpu_freq =str(psutil.cpu_freq())
 print(type(cpu_freq))
 print(cpu_freq)
 
+# cpu_freq_current =
+# cpu_freq_min =
+# cpu_freq_max =
 
 
 
@@ -54,8 +64,6 @@ for i in range(currentLoc, len(cpu_freq)):
 print(cpu_freq_current)
 
 
-
-
 # 2) For Min Frequency
 cpu_freq_min = ""
 cpu_freq_min_d = 0
@@ -69,10 +77,6 @@ for i in range(minLoc, len(cpu_freq)):
             break
 
 print(cpu_freq_min)
-
-
-
-
 
 
 # 3) For Max Frequency
@@ -93,6 +97,83 @@ print(cpu_freq_max)
 
 
 
-# cpu_freq_current =
-# cpu_freq_min =
-# cpu_freq_max = 
+#Return the average system load over the last 1, 5 and 15 minutes as a tuple.
+# The load represents the processes which are in a runnable state, either using the CPU or waiting to use the CPU
+
+#print(psutil.getloadavg())
+#print([x / psutil.cpu_count() * 100 for x in psutil.getloadavg()])
+load_on_cpu_tuple = [x / psutil.cpu_count() * 100 for x in psutil.getloadavg()]
+
+load_on_cpu = sum(load_on_cpu_tuple) / len(load_on_cpu_tuple)
+print(load_on_cpu)
+
+
+#Return statistics about system memory usage as a named tuple including the following fields, expressed in bytes
+mem = psutil.virtual_memory()
+#print(mem)
+mem = tuple(mem)
+memory_used_percent = mem[2]
+print(memory_used_percent)
+
+
+
+
+# temperature
+time.sleep(1)
+temp = psutil.sensors_temperatures()
+
+temp = (tuple(temp['acpitz']))
+temp = str(str(temp))
+print(temp)
+
+temp_l = temp.find("current")
+
+temperature_of_cpu = float(temp[(temp_l + 8) : (temp_l + 12)])
+print(temperature_of_cpu)
+
+
+
+#battery
+time.sleep(1)
+battery = psutil.sensors_battery()
+mm, ss = divmod(battery.secsleft, 60)
+hh, mm = divmod(battery.secsleft, 60)
+print(type(battery.percent))
+print(hh)
+
+if (mm > 30):
+    hh += 1
+
+if (battery.percent > 90):
+    if (hh >= 4):
+        score += 10
+    if (hh <= 1):
+        score += 2
+    else:
+        score += 5
+
+
+if (battery.percent > 55):
+    if (hh >= 3):
+        score += 10
+    if (hh <= 1):
+        score += 2
+    else:
+        score += 5
+
+    
+if (battery.percent > 20):
+    if (hh >= 2):
+        score += 10
+    if (hh <= 1):
+        score += 3
+    else:
+        score += 5
+
+print( score)
+
+
+#boot time
+time.sleep(1)
+print("System boot time =  ", end="")
+print(datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S"))
