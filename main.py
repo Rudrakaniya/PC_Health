@@ -235,9 +235,14 @@ print("System boot time =  ", end="")
 print(datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S"))
 print()
 print()
+
+
+#final Result is computed on the bases of the score we calculated 
+
 print("Computing the values and determining the health of the PC...")
 print()
 time.sleep(2)
+#final result
 if (score >= 100):
     print("Your Systems Health is GOOD!!")
 if (score < 100 and score > 55):
